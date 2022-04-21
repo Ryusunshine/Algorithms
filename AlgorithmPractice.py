@@ -4,7 +4,7 @@
 # 1주일 월화수목금 2문제 * 5일 = 10문제, 토,일은  복습
 # 1문제 레벨2 30분 / 레벨3 45분 / 레벨4 1시간
 # 레벨2 3문제 / 레벨3 2문제/ 레벨4 2문제 = 7문제, 5시간
-# 무조건 시간지키고서 문제 풀어보기
+# 무조건 시간 지키고서 문제 풀어보기
 
 # 알고리즘 문제 풀이 절차
     # 1. 문제 정확하게 읽기
@@ -30,45 +30,46 @@
 # 1. 그리디 알고리즘
 
 # 문제 - 1
-n, m, k = map(int, input().split(' '))
-numbers = list(map(int, input().split(' ')))
-#중간중간에 입력한게 제대로 받았는지 확인해야함
-print(n, m, k, numbers)
 
 # 0. 정렬
 # 1. 최대를 찾는다
 # 2. 최대를 k번 더하자
-# 3. 최대 바로 직전의 값을 1번
+# 3. 최대 바로 직전의 값을 더하자
 # 4. 1번으로 돌아가서 반복
-
+# 변수 = 최대값, 바로 직전값, 반복횟수, 반복 끝나는 조건문
 
 # 5 8 4
 # 2 4 5 4 6
 # 46
 
 # 6665666
+n, m, k = map(int, input().split(' '))
+numbers = list(map(int, input().split(' ')))
+
 numbers.sort(reverse=True)
 
 count = 0
 numbers_sum = 0
-while True:
-    # m 번 보다 크면 반복문 종료
-    if count >= m:
+while True: # while True 쓰면 반복문 끝나는 조건문 꼭 써야해!!! 아님 무한루프 돌아
+    if count >= m: # m 번 보다 크면 반복문 종료
         break
     max_num = numbers[0]
     numbers_sum += max_num * k
-    second_max_num = numbers[-1]
+    second_max_num = numbers[1] # 6665 이걸 한묶음으로 더해주는걸 반복
     numbers_sum += second_max_num #여기까지 더하면 k+1번 더한것
-    count += (k+1)
+    count += (k+1) # count = 반복횟수
+    #그리고 언제 반복문을 멈춰야되는지 생각하고 while조건문 밑에다가 적어
 
-# m번보다 더 더했으면 더 더한만큼 빼주면 돼! 어떻게 할지 생각해봐
+# while 조건문 빠져나왔는데 이미 m번 이상 더해져있을때 어떻게 할지 조건문 있어야겟지!
+# 그럼 m번보다 더 더했으면 더 더한만큼 빼주면 돼!
 if count > m:  #만약 m이 8인데 10번 count됐으면 10(count) - 8(m) 하면 초과로 더해진 2번이 나옴
+    # # 만약 66566566, 666566 이 정답인 배열이라면 665 6665가 한묶음이라서 초과로 더해진게 하나라면 두번째로 큰수 일수밖에 없음
     if count - m == 1:
-        print(numbers_sum - numbers[0])
+        print(numbers_sum - numbers[1])
     else:
-        print(numbers_sum - numbers[0] - numbers[1] * (count - m - 1))
-
-print(numbers_sum)
+        print(numbers_sum - numbers[1] - numbers[0] * (count - m - 1))
+else:
+    print(numbers_sum)
 
 # 구현
 
@@ -91,16 +92,16 @@ for i in range(len(route)):
             continue
         current_coord[1] -= 1
     elif direction == 'U':
-        if current_coord[0] == 0: #위로 갈때 좌표가 0이 되면 지도에서 벗어나므로 무시
+        if current_coord[0] == 1: #위로 갈때 좌표가 0이 되면 지도에서 벗어나므로 무시
             continue
         current_coord[0] -= 1
     elif direction == 'D':
         if current_coord[0] == n:
             continue
         current_coord[0] += 1
-    print(direction, current_coord)
+    #print(direction, current_coord)
 
-print(current_coord[0], current_coord[1])
+#print(current_coord[0], current_coord[1])
 
 # 두번째 방법 - 더 깔끔한 방법
 n = int(input())
@@ -113,7 +114,7 @@ moves = ["L", "R", "U", "D"]
 
 current_coord = [1, 1]
 for i in range(len(route)):
-    direction = route[i] # route 인덱스를 방향으로 잡으면
+    direction = route[i] # route에 들어있는 L, R, U, D 를 direction으로 받고 각 원소가 moves 배열에 어느 인덱스에 있는지 찾아준다
     index = moves.index(direction) # list.index(인자)는 인자가 몇번째 인덱스인지 찾아준다.
     next_row = current_coord[0] + d_row[index] # current_coord[0] 이 행
     next_col = current_coord[1] + d_col[index] # 다음 좌표는 현재 좌표에다가 row/col 를 더한값
@@ -129,6 +130,12 @@ for i in range(len(route)):
 # 문제 - 3
 # 상하좌우를 순회하면서 0인지 확인해야돼 = dfs, bfs
 
+# graph의 표현방식 = 인접행렬 / 연결 리스트
+# 00110
+# 00011
+# 11111
+# 00000
+
 # n = 행, m = 열
 n, m = map(int, input().split(' '))
 graph = [list(map(int, input())) for _ in range(n)]
@@ -137,12 +144,6 @@ from collections import deque
 visited = [[False] * m for _ in range(n)]
 # print(graph)
 # print(visited)
-
-# graph의 표현방식 = 인접행렬 / 연결 리스트
-# 00110
-# 00011
-# 11111
-# 00000
 
 # L R U D
 d_row = [0, 0, -1, 1]
@@ -154,12 +155,15 @@ def bfs(graph, visited, start_node):
     visited[start_node[0]][start_node[1]] = True
     while queue:
         current_node = queue.popleft()
+        graph[current_node[0]][current_node[1]] = 1 # 큐에서 빠진 값이 0이라서 반복문에 들어온거니깐 1로 바꿔준다
+        # 이제 주위에 0이 있는지 행개수만큼 돌아야해
         for i in range(len(d_row)): # current_node가 방문해야할 연결된 리스트는 4개(즉 행 갯수만큼)
+            #다음 좌표를 정의해주자
             next_row = current_node[0] + d_row[i]
             next_col = current_node[1] + d_col[i]
             if next_row < 0 or next_col < 0 or next_row > n - 1 or next_col > m - 1: # 갈수있는 범위인지 체크
                 continue
-            if visited[next_row][next_col] == True: # 그 좌표가 이미 방문처리되었으면
+            if visited[next_row][next_col]: # 그 좌표가 이미 방문처리되었으면
                 continue
             if graph[next_row][next_col] == 1: #graph에서 좌표로 가봤는데 1이면
                 continue
@@ -167,9 +171,12 @@ def bfs(graph, visited, start_node):
             visited[next_row][next_col] = True
 
 # 0인지 확인하기 위해 2차원 배열 한번씩 돌기(이중 반복문)
+count = 0
 for row in range(n):
     for col in range(m):
-        if graph[next_row][next_col] == 0: # 0 이면 방문
+        #이중문 돌면서 언제 일때 방문해야돼? 0일때!
+        if graph[row][col] == 0: # graph의 좌표 graph[row][col] 이 0일때
+            # bfs 순회돌면서 주위에 0있는지 찾아
             bfs(graph, visited, [row, col])
             count += 1
 
